@@ -1,0 +1,7 @@
+---
+_redmine_db_database: redmine
+_redmine_db_username: linpostgres
+_redmine_secret_key_base: supersecretkey
+_redmine_db_password: GgB3KQsdcb3U#6uq
+
+_datadog_api_key: 2ae962661fa6fa274e5fc700eeb09b3b

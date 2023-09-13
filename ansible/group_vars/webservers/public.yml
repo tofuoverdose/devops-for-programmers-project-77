@@ -1,0 +1,28 @@
+---
+pip_install_packages:
+  - name: docker
+
+redmine_db_addr: lin-27472-10841-pgsql-primary-private.servers.linodedb.net
+redmine_db_database: "{{ _redmine_db_database }}"
+redmine_db_port: "5432"
+redmine_db_username: "{{ _redmine_db_username }}"
+redmine_secret_key_base: "{{ _redmine_secret_key_base }}"
+redmine_db_password: "{{ _redmine_db_password }}"
+
+redmine_container_env_path: /tmp/redmine.env
+
+public_url: https://tofuoverdose.xyz
+
+datadog_site: "datadoghq.eu"
+datadog_agent_major_version: "7"
+datadog_checks:
+  http_check:
+    init_config:
+    instances:
+      - name: redmine
+        url: "{{ public_url }}"
+        tls_verify: yes
+datadog_api_key: "{{ _datadog_api_key }}"
+
+
+

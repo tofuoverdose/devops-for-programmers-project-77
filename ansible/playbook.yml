@@ -1,0 +1,49 @@
+---
+- name: install docker module using pip3
+  hosts: all
+  roles:
+    - geerlingguy.pip
+
+- name: create database
+  hosts:
+  community.postgresql.postgresql_db:
+    name: acme
+
+- name: start serving redmine on nodes
+  hosts: all
+  tasks:
+    - name: create env file from template
+      ansible.builtin.template:
+        src: templates/redmine.env.j2
+        dest: "{{ redmine_container_env_path }}"
+
+    - name: add docker GPG apt key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: run docker container
+      docker_container:
+        name: redmine_app
+        image: redmine:latest
+        published_ports:
+          - 80:3000
+        restart_policy: always
+        detach: true
+        env_file: "{{ redmine_container_env_path }}"
+
+- hosts: webservers
+  roles:
+    - role: datadog.datadog
+      become: yes
